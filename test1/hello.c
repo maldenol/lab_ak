@@ -56,14 +56,16 @@ static int __init hello_init(void)
 {
 	if (number == 0 || (number >= 5 && number <= 10))
 		printk(KERN_EMERG "Oh, no!\n");
-	else if (number > 10)
-		return -EINVAL;
+	BUG_ON(number > 10);
 
 	unsigned int i;
 
 	for (i = 0; i < number; ++i) {
 		timestamp *timestamp_inst =
 			kmalloc(sizeof(timestamp), GFP_KERNEL);
+
+		if (i == number - 1)
+			timestamp_inst = 0;
 
 		list_add_tail(&timestamp_inst->list_node, &timestamp_list_head);
 
