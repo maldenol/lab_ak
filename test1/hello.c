@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2017, GlobalLogic Ukraine LLC
  * All rights reserved.
@@ -56,35 +55,35 @@ static LIST_HEAD(timestamp_list_head);
 static int __init hello_init(void)
 {
 	if (number == 0 || (number >= 5 && number <= 10))
-	{
 		printk(KERN_EMERG "Oh, no!\n");
-	}
 	else if (number > 10)
-	{
 		return -EINVAL;
-	}
-	
+
 	unsigned int i;
-	for (i = 0; i < number; ++i)
-	{
-		timestamp *timestamp_inst = (timestamp *)kmalloc(sizeof(timestamp), GFP_KERNEL);
+
+	for (i = 0; i < number; ++i) {
+		timestamp *timestamp_inst =
+			kmalloc(sizeof(timestamp), GFP_KERNEL);
+
 		list_add_tail(&timestamp_inst->list_node, &timestamp_list_head);
+
 		timestamp_inst->time = ktime_get();
-		
+
 		printk(KERN_EMERG "Hello, world!\n");
 	}
-	
+
 	return 0;
 }
 
 static void __exit hello_exit(void)
 {
 	timestamp *pos, *n;
+
 	list_for_each_entry_safe(pos, n, &timestamp_list_head, list_node) {
 		printk(KERN_EMERG "%llu\n", (unsigned long long)pos->time);
-		
+
 		list_del(&pos->list_node);
-		
+
 		kfree(pos);
 	}
 }
